@@ -7,10 +7,8 @@ if exist E:\STATIC_WEBSITE\ (
 )
 echo "Creating STATIC_WEBSITE folder"
 md E:\STATIC_WEBSITE
-xcopy "C:\Users\fahad.haroon\Downloads\static_website\S3 static website hosting file.zip" "E:\STATIC_WEBSITE" /s /e /Y
-7z x "E:\STATIC_WEBSITE\S3 static website hosting file.zip" -o"E:\STATIC_WEBSITE\"
+xcopy "C:\ProgramData\Jenkins\.jenkins\workspace\4th job" "E:\STATIC_WEBSITE" /s /e /Y
 sed -i "s/Dimension/%SedVariable%/g" "E:\STATIC_WEBSITE\static-website-example-master\index.html"
 
 echo "Clean Up"
 
-del /f "E:\STATIC_WEBSITE\S3 static website hosting file.zip"
