@@ -10,3 +10,5 @@ md E:\STATIC_WEBSITE
 xcopy "C:\ProgramData\Jenkins\.jenkins\workspace\4th job" "E:\STATIC_WEBSITE" /s /e /Y
 sed -i "s/Dimension/%SedVariable%/g" "E:\STATIC_WEBSITE\index.html"
 
+echo "Clean UP"
+del /f "E:\STATIC_WEBSITE\sed*" 
