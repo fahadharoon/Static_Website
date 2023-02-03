@@ -13,9 +13,9 @@ jobs:
     runs-on: macOS-latest
 
     steps:
-    - name: Stop Appium
-      run: |
-        killall node
+#     - name: Stop Appium
+#       run: |
+#         killall node
         
     - name: Checkout code
       uses: actions/checkout@v2
