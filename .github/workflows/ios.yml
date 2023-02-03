@@ -1,0 +1,39 @@
+name: Maven with Appium for iOS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  XCODE_SELECT: /Applications/Xcode.app/Contents/Developer
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+    - name: Stop Appium
+      run: |
+        killall node
+        
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Build with Maven
+      run: mvn clean install
+    
+    - name: Start Appium
+      run: |
+        appium &
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts
+        path: target/*.jar
