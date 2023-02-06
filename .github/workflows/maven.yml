@@ -23,7 +23,7 @@ jobs:
         java-version: 11
 
     - name: Set up Android SDK
-      uses: actions/setup-android@v2
+      uses: actions/setup-android@v1
       with:
         components: build-tools,platform-tools,android-30
 
