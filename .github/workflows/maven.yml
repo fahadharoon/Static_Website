@@ -1,4 +1,4 @@
-name: Android CI
+name: Build Android SDK
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  ANDROID_SDK_ROOT: /usr/local/android-sdk
+  JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
   ANDROID_HOME: /usr/local/android-sdk
 
 jobs:
@@ -22,10 +22,20 @@ jobs:
       with:
         java-version: 11
 
-    - name: Set up Android SDK
-      uses: actions/setup-android@v1
-      with:
-        components: build-tools,platform-tools,android-30
+    - name: Install Android SDK
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y android-sdk
 
-#     - name: Build with Maven
-#       run: ./mvnw clean test
+    - name: Set up environment variables
+      run: |
+        echo "export ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+        echo "export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+
+    - name: Create Android SDK
+      run: |
+        sdkmanager --update
+        sdkmanager "platform-tools" "platforms;android-29" "build-tools;29.0.3"
+
+    - name: Build Android SDK
+      run: ./gradlew build
