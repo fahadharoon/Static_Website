@@ -27,5 +27,5 @@ jobs:
       with:
         components: build-tools,platform-tools,android-30
 
-#     - name: Build with Maven
-#       run: ./mvnw clean test
+    - name: Build with Maven
+      run: ./mvnw clean test
