@@ -1,39 +1,32 @@
-name: Test on emulator
+name: Install Android Emulator
 
-on: [push]
+on: push
 
 env:
-  ANDROID_HOME: /opt/android-sdk
-  JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk
+  ANDROID_SDK_TOOLS: "6846975_latest"
+  ANDROID_HOME: ${{ env.HOME }}/android-sdk
 
 jobs:
-  test:
+  install_emulator:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Java
-      uses: actions/setup-java@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 14
 
-    - name: Install Android SDK and components
-      uses: elmundio87/setup-android-sdk@v0.2.0
+    - name: Set up Android SDK
+      uses: actions/setup-android@v1
       with:
-        components: build-tools;29.0.3,platform-tools,android-29,emulator
+        android-sdk-tools: ${{ env.ANDROID_SDK_TOOLS }}
 
-    - name: Create and start emulator
+    - name: Install Android Emulator
+      run: sdkmanager "emulator" "system-images;android-30;google_apis;x86_64"
+
+    - name: Create AVD
       run: |
-        echo "no" | android create avd --force -n test -t android-29 --abi google_apis/x86
-        emulator -avd test -no-audio -no-window &
-
-    - name: Wait for emulator to be ready
-      run: |
-        ./wait_for_emulator.sh
-        adb shell input keyevent 82
-
-#     - name: Build and test with Maven
-#       run: |
-#         ./mvnw clean test
+        echo no | avdmanager create avd --force --name testAVD --package "system-images;android-30;google_apis;x86_64" --device "pixel"
