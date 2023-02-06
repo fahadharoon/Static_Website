@@ -10,4 +10,5 @@ jobs:
         host: 34.125.113.85
         port:  22
         user: faraz_aws_acc
+        pass: httphttp
         command:  echo 'Hello world'
