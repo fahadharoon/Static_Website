@@ -1,17 +1,31 @@
-name: Connect to local machine
+name: Android CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 env:
-  USERNAME: <your_username>
-  PASSWORD: <your_password>
+  ANDROID_SDK_ROOT: /usr/local/android-sdk
+  ANDROID_HOME: /usr/local/android-sdk
 
 jobs:
-  connect_to_local_machine:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Connect to local machine
-      run: |
-        #ssh ${USERNAME}@<local_machine_IP_address> -o StrictHostKeyChecking=no -p <port> -i <private_key_path>
-        ping 192.168.184.255
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Set up Android SDK
+      uses: actions/setup-android@v2
+      with:
+        components: build-tools,platform-tools,android-30
+
+    - name: Build with Maven
+      run: ./mvnw clean test
