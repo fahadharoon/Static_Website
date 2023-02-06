@@ -1,0 +1,17 @@
+name: Connect to local machine
+
+on: [push]
+
+env:
+  USERNAME: <your_username>
+  PASSWORD: <your_password>
+
+jobs:
+  connect_to_local_machine:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Connect to local machine
+      run: |
+        #ssh ${USERNAME}@<local_machine_IP_address> -o StrictHostKeyChecking=no -p <port> -i <private_key_path>
+        ping 192.168.184.255
