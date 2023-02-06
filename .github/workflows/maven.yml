@@ -1,17 +1,13 @@
 name: Connect to local machine
 on: [push]
-env:
-  USERNAME: <your_username> 
-  PASSWORD: <your_password>
 jobs:
   connect_to_local_machine:
     runs-on: ubuntu-latest
     steps:
-    - name: Run sshpass commands
-      uses: matheusvanzan/sshpass-action@v2
+    - name: SSH Command
+      uses: D3rHase/ssh-command-action@v0.2.2
       with:
         host: 34.125.113.85
+        port:  22
         user: faraz_aws_acc
-        pass: httphttp
-        run: |
-          ls
+        command:  echo 'Hello world'
