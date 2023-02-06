@@ -1,41 +1,39 @@
-name: Build Android SDK
+name: Test on emulator
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 env:
-  JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
-  ANDROID_HOME: /usr/local/android-sdk
+  ANDROID_HOME: /opt/android-sdk
+  JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up JDK
-      uses: actions/setup-java@v1
+    - name: Set up Java
+      uses: actions/setup-java@v2
       with:
-        java-version: 11
+        java-version: 1.8
 
-    - name: Install Android SDK
+    - name: Install Android SDK and components
+      uses: elmundio87/setup-android-sdk@v0.2.0
+      with:
+        components: build-tools;29.0.3,platform-tools,android-29,emulator
+
+    - name: Create and start emulator
       run: |
-        sudo apt-get update
-        sudo apt-get install -y android-sdk
+        echo "no" | android create avd --force -n test -t android-29 --abi google_apis/x86
+        emulator -avd test -no-audio -no-window &
 
-    - name: Set up environment variables
+    - name: Wait for emulator to be ready
       run: |
-        echo "export ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+        ./wait_for_emulator.sh
+        adb shell input keyevent 82
 
-    - name: Create Android SDK
-      run: |
-        sdkmanager --update
-        sdkmanager "platform-tools" "platforms;android-29" "build-tools;29.0.3"
-
-    - name: Build Android SDK
-      run: ./gradlew build
+#     - name: Build and test with Maven
+#       run: |
+#         ./mvnw clean test
