@@ -1,32 +1,17 @@
-name: Install Android Emulator
-
-on: push
-
+name: Connect to local machine
+on: [push]
 env:
-  ANDROID_SDK_TOOLS: "6846975_latest"
-  ANDROID_HOME: ${{ env.HOME }}/android-sdk
-
+  USERNAME: <your_username> 
+  PASSWORD: <your_password>
 jobs:
-  install_emulator:
+  connect_to_local_machine:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up JDK
-      uses: actions/setup-java@v1
+    - name: Run sshpass commands
+      uses: matheusvanzan/sshpass-action@v2
       with:
-        java-version: 14
-
-    - name: Set up Android SDK
-      uses: actions/setup-android@v1
-      with:
-        android-sdk-tools: ${{ env.ANDROID_SDK_TOOLS }}
-
-    - name: Install Android Emulator
-      run: sdkmanager "emulator" "system-images;android-30;google_apis;x86_64"
-
-    - name: Create AVD
-      run: |
-        echo no | avdmanager create avd --force --name testAVD --package "system-images;android-30;google_apis;x86_64" --device "pixel"
+        host: 34.125.113.85
+        user: faraz_aws_acc
+        pass: httphttp
+        run: |
+          ls
