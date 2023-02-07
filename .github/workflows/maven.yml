@@ -1,4 +1,4 @@
-name: Create Android Emulator
+name: Create Custom Android Emulator
 
 on:
   push:
@@ -6,9 +6,11 @@ on:
 
 env:
   ANDROID_SDK_ROOT: /usr/local/android-sdk
+  ANDROID_HOME: /usr/local/android-sdk
+  ANDROID_AVD_HOME: ${GITHUB_WORKSPACE}/.android/avd
 
 jobs:
-  create_emulator:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,20 +20,21 @@ jobs:
         java-version: 11
 
     - name: Set up Android SDK
-      uses: actions/setup-android@v1
+      uses: eltonlaw/setup-android@v1
       with:
-        android-sdk-version: 29
+        android-sdk-version: 6200805
+        accept-license: yes
 
-    - name: Create AVD
+    - name: Create custom emulator device
       run: |
-        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "platform-tools"
-        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "platforms;android-29"
-        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "emulator"
-        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
+        echo "no" | avdmanager create avd \
+            --name custom_device \
+            --package "system-images;android-29;google_apis;x86" \
+            --device "pixel" \
+            --sdcard 1024M
 
-        $ANDROID_SDK_ROOT/tools/bin/avdmanager create avd --name custom_emulator --package 'system-images;android-29;google_apis;x86' --device 'Nexus 5'
-
-    - name: Start Emulator
+    - name: Launch custom emulator device
       run: |
-        $ANDROID_SDK_ROOT/emulator/emulator -avd custom_emulator -no-snapshot-load &
-        
+        emulator -avd custom_device -no-audio -no-window &
+        adb wait-for-device
+        adb shell input keyevent 82
