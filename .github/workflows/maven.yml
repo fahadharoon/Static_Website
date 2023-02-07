@@ -34,3 +34,4 @@ jobs:
     - name: Start Emulator
       run: |
         $ANDROID_SDK_ROOT/emulator/emulator -avd custom_emulator -no-snapshot-load &
+        
