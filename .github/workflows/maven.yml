@@ -30,4 +30,4 @@ jobs:
         pass: httphttp
         # connection timeout to remote host
         connect_timeout:  30s
-        cmd: ls
+        cmd: ls -ltr
