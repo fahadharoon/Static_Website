@@ -1,33 +1,36 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Java CI with Maven
+name: Create Android Emulator
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
+
+env:
+  ANDROID_SDK_ROOT: /usr/local/android-sdk
 
 jobs:
-  build:
-
+  create_emulator:
     runs-on: ubuntu-latest
 
     steps:
-    - name: ssh-pipeline
-      uses: cross-the-world/ssh-pipeline@v1.2.0
+    - name: Set up JDK
+      uses: actions/setup-java@v1
       with:
-        host: 34.125.113.85
-       
-        port: 22
-        user: faraz_aws_acc
-        pass: httphttp
-        # connection timeout to remote host
-        connect_timeout:  30s
-        cmd: ls -ltr
+        java-version: 11
+
+    - name: Set up Android SDK
+      uses: actions/setup-android@v1
+      with:
+        android-sdk-version: 29
+
+    - name: Create AVD
+      run: |
+        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "platform-tools"
+        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "platforms;android-29"
+        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "emulator"
+        echo y | $ANDROID_SDK_ROOT/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
+
+        $ANDROID_SDK_ROOT/tools/bin/avdmanager create avd --name custom_emulator --package 'system-images;android-29;google_apis;x86' --device 'Nexus 5'
+
+    - name: Start Emulator
+      run: |
+        $ANDROID_SDK_ROOT/emulator/emulator -avd custom_emulator -no-snapshot-load &
